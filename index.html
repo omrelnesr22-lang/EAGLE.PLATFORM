@@ -1,0 +1,647 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>منصة ICT التعليمية - الصف الثالث الإعدادي</title>
+    <style>
+      /* إعدادات عامة */
+      @import url("https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap");
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Cairo", sans-serif;
+      }
+
+      body {
+        background: #0f172a;
+        color: #e2e8f0;
+        display: flex;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      /* القائمة الجانبية */
+      .sidebar {
+        width: 300px;
+        background: rgba(30, 41, 59, 0.8);
+        backdrop-filter: blur(10px);
+        border-left: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 20px;
+        height: 100vh;
+        position: fixed;
+        right: 0;
+        top: 0;
+        overflow-y: auto;
+        transition: 0.3s;
+        z-index: 100;
+      }
+
+      .logo {
+        text-align: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .logo h2 {
+        color: #38bdf8;
+        font-size: 1.5rem;
+        margin-bottom: 5px;
+      }
+
+      .logo p {
+        font-size: 0.9rem;
+        color: #94a3b8;
+      }
+
+      .nav-section {
+        margin-bottom: 25px;
+      }
+
+      .nav-section h3 {
+        color: #f472b6;
+        font-size: 1rem;
+        margin-bottom: 10px;
+        padding-right: 10px;
+        border-right: 3px solid #f472b6;
+      }
+
+      .nav-item {
+        display: block;
+        padding: 10px 15px;
+        color: #cbd5e1;
+        text-decoration: none;
+        border-radius: 8px;
+        margin-bottom: 5px;
+        transition: 0.2s;
+        cursor: pointer;
+        font-size: 0.95rem;
+      }
+
+      .nav-item:hover,
+      .nav-item.active {
+        background: rgba(56, 189, 248, 0.15);
+        color: #38bdf8;
+        transform: translateX(-5px);
+      }
+
+      /* المحتوى الرئيسي */
+      .main-content {
+        margin-right: 300px;
+        padding: 40px;
+        flex: 1;
+        max-width: calc(100% - 300px);
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        background: rgba(30, 41, 59, 0.5);
+        padding: 20px;
+        border-radius: 15px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .header h1 {
+        font-size: 1.8rem;
+        color: #f8fafc;
+      }
+
+      .progress-container {
+        width: 200px;
+      }
+
+      .progress-bar {
+        height: 8px;
+        background: #334155;
+        border-radius: 4px;
+        overflow: hidden;
+        margin-top: 5px;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #38bdf8, #818cf8);
+        width: 0%;
+        transition: 0.5s;
+      }
+
+      /* بطاقة الدرس */
+      .lesson-card {
+        background: rgba(30, 41, 59, 0.7);
+        border-radius: 16px;
+        padding: 30px;
+        margin-bottom: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        display: none; /* يتم إظهارها بالجافاسكربت */
+        animation: fadeIn 0.5s ease;
+      }
+
+      .lesson-card.active {
+        display: block;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .lesson-card h2 {
+        color: #38bdf8;
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid rgba(56, 189, 248, 0.2);
+      }
+
+      .lesson-card h3 {
+        color: #f472b6;
+        font-size: 1.3rem;
+        margin: 25px 0 15px;
+      }
+
+      .lesson-card p,
+      .lesson-card li {
+        line-height: 1.8;
+        color: #cbd5e1;
+        margin-bottom: 10px;
+        font-size: 1.05rem;
+      }
+
+      .lesson-card ul,
+      .lesson-card ol {
+        padding-right: 20px;
+        margin-bottom: 15px;
+      }
+
+      /* تنسيق الكود */
+      .code-block {
+        background: #0f172a;
+        border: 1px solid #1e293b;
+        border-radius: 10px;
+        padding: 20px;
+        direction: ltr;
+        text-align: left;
+        font-family: "Courier New", monospace;
+        color: #a5b4fc;
+        margin: 20px 0;
+        position: relative;
+        overflow-x: auto;
+      }
+
+      .code-block::before {
+        content: "Python";
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: #38bdf8;
+        color: #0f172a;
+        padding: 2px 10px;
+        font-size: 0.7rem;
+        border-radius: 0 0 10px 0;
+        font-weight: bold;
+        font-family: "Cairo", sans-serif;
+      }
+
+      .copy-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #334155;
+        color: #e2e8f0;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        transition: 0.2s;
+      }
+
+      .copy-btn:hover {
+        background: #38bdf8;
+        color: #0f172a;
+      }
+
+      /* زر تفاعلي */
+      .ask-btn {
+        background: linear-gradient(135deg, #38bdf8, #818cf8);
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 50px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 20px;
+        transition: 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .ask-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(56, 189, 248, 0.3);
+      }
+
+      /* للشاشات الصغيرة */
+      @media (max-width: 768px) {
+        .sidebar {
+          width: 100%;
+          height: auto;
+          position: relative;
+          border-left: none;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .main-content {
+          margin-right: 0;
+          max-width: 100%;
+          padding: 20px;
+        }
+        body {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- القائمة الجانبية -->
+    <div class="sidebar">
+      <div class="logo">
+        <h2>💻 منصة ICT</h2>
+        <p>الصف الثالث الإعدادي - ترم أول</p>
+      </div>
+
+      <div class="nav-section">
+        <h3>الوحدة الأولى: الذكاء الاصطناعي</h3>
+        <a class="nav-item active" onclick="showLesson('lesson1')"
+          >الدرس 1: التفكير الحاسوبي</a
+        >
+        <a class="nav-item" onclick="showLesson('lesson2')"
+          >الدرس 2: خوارزميات الذكاء الاصطناعي</a
+        >
+        <a class="nav-item" onclick="showLesson('lesson3')"
+          >الدرس 3: السلاسل النصية والقوائم</a
+        >
+        <a class="nav-item" onclick="showLesson('lesson4')"
+          >الدرس 4: الدوال ذات المعاملات</a
+        >
+        <a class="nav-item" onclick="showLesson('lesson5')"
+          >الدرس 5: معالجة أخطاء المدخلات</a
+        >
+      </div>
+
+      <div class="nav-section">
+        <h3>الوحدة الثانية: الأمن السيبراني</h3>
+        <a class="nav-item" onclick="showLesson('lesson6')"
+          >الدرس 1: التنبؤ بنموذج AI</a
+        >
+        <a class="nav-item" onclick="showLesson('lesson7')"
+          >الدرس 2: حقوق الملكية الفكرية</a
+        >
+        <a class="nav-item" onclick="showLesson('lesson8')"
+          >الدرس 3: الوعي السيبراني والألعاب</a
+        >
+        <a class="nav-item" onclick="showLesson('lesson9')"
+          >الدرس 4: التزييف العميق (Deepfake)</a
+        >
+      </div>
+    </div>
+
+    <!-- المحتوى الرئيسي -->
+    <div class="main-content">
+      <div class="header">
+        <h1>مرحباً بك في منصتك التعليمية 🚀</h1>
+        <div class="progress-container">
+          <span style="font-size: 0.9rem; color: #94a3b8">تقدمك في المنهج</span>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- الدرس 1 -->
+      <div id="lesson1" class="lesson-card active">
+        <h2>الدرس الأول: التفكير الحاسوبي وحل المشكلات</h2>
+        <p>
+          التفكير الحاسوبي هو أسلوب تفكير منظم يُحاكي طريقة عمل الكمبيوتر في
+          معالجة المشكلات. يعتمد على 4 خطوات أساسية:
+        </p>
+        <ul>
+          <li>
+            <strong>تحليل المشكلة (Decomposition):</strong> تقسيم المشكلة
+            الكبيرة إلى أجزاء صغيرة.
+          </li>
+          <li>
+            <strong>التعرف على الأنماط (Pattern Recognition):</strong> ملاحظة
+            التشابه بين المشكلات.
+          </li>
+          <li>
+            <strong>التجريد (Abstraction):</strong> التركيز على المعلومات المهمة
+            وترك التفاصيل غير الضرورية.
+          </li>
+          <li>
+            <strong>تصميم الخوارزمية (Algorithm):</strong> وضع خطوات محددة
+            ومرتبة للحل.
+          </li>
+        </ul>
+
+        <h3>مثال: جمع رقمين</h3>
+        <div class="code-block">
+          <button class="copy-btn" onclick="copyCode(this)">نسخ</button>
+          num1 = int(input('Enter first number: '))<br />
+          num2 = int(input('Enter second number: '))<br />
+          sum = num1 + num2<br />
+          print('Sum =', sum)
+        </div>
+        <p>
+          <strong>ملاحظة:</strong> إذا أدخل المستخدم نصاً مثل "خمسة" بدلاً من
+          رقم، سيظهر خطأ <code>ValueError</code> لأن دالة <code>int()</code> لا
+          تستطيع تحويل النصوص إلى أرقام.
+        </p>
+
+        <button class="ask-btn" onclick="askAI('التفكير الحاسوبي')">
+          🤖 اسأل المعلم الذكي عن هذا الدرس
+        </button>
+      </div>
+
+      <!-- الدرس 2 -->
+      <div id="lesson2" class="lesson-card">
+        <h2>الدرس الثاني: خوارزميات الذكاء الاصطناعي</h2>
+        <p>
+          الخوارزمية هي مجموعة من الخطوات المرتبة منطقياً لحل مشكلة معينة. أنواع
+          الخوارزميات:
+        </p>
+        <ul>
+          <li>
+            <strong>تسلسلية (Sequential):</strong> تنفذ خطوة بعد خطوة بترتيب
+            ثابت.
+          </li>
+          <li>
+            <strong>شرطية (Conditional):</strong> تعتمد على جملة if للتحقق من
+            شرط.
+          </li>
+          <li><strong>تكرارية (Loop):</strong> تكرر نفس العملية عدة مرات.</li>
+          <li><strong>البحث (Search):</strong> للعثور على عنصر معين.</li>
+          <li><strong>الترتيب (Sorting):</strong> لترتيب البيانات.</li>
+        </ul>
+
+        <h3>خوارزميات الذكاء الاصطناعي:</h3>
+        <p>
+          بدلاً من إعطاء البرنامج تعليمات تفصيلية، نقوم بتزويده ببيانات ليتعلم
+          منها:
+        </p>
+        <ul>
+          <li>
+            <strong>تعلم الآلة (Machine Learning):</strong> يتعلم من البيانات
+            ويأخذ قرارات.
+          </li>
+          <li>
+            <strong>التعلم العميق (Deep Learning):</strong> نوع متطور يستخدم
+            الشبكات العصبية.
+          </li>
+        </ul>
+
+        <h3>مثال: البحث في قائمة</h3>
+        <div class="code-block">
+          <button class="copy-btn" onclick="copyCode(this)">نسخ</button>
+          numbers = [3, 7, 10, 5]<br />
+          target = 10<br />
+          for num in numbers:<br />
+          &nbsp;&nbsp;&nbsp;&nbsp;if num == target:<br />
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print('Found')
+        </div>
+
+        <button class="ask-btn" onclick="askAI('خوارزميات الذكاء الاصطناعي')">
+          🤖 اسأل المعلم الذكي عن هذا الدرس
+        </button>
+      </div>
+
+      <!-- الدرس 3 -->
+      <div id="lesson3" class="lesson-card">
+        <h2>الدرس الثالث: السلاسل النصية (Strings) والقوائم (Lists)</h2>
+        <p>
+          <strong>السلسلة النصية:</strong> مجموعة من الحروف والأرقام والرموز
+          داخل علامتي تنصيص.
+        </p>
+        <p>
+          <strong>القائمة:</strong> مجموعة مرتبة من القيم داخل قوسين مربعين [ ].
+        </p>
+
+        <h3>خصائص السلاسل النصية:</h3>
+        <ul>
+          <li><code>len(text)</code>: طول النص.</li>
+          <li><code>text[0]</code>: الوصول لحرف معين (العد يبدأ من 0).</li>
+          <li><code>text[-1]</code>: الوصول للحرف الأخير.</li>
+          <li><code>for letter in text:</code>: التكرار على الحروف.</li>
+          <li><code>"h" in text</code>: البحث داخل النص.</li>
+          <li><code>text.upper()</code>: تحويل الحروف إلى كبيرة.</li>
+        </ul>
+
+        <h3>عمليات القوائم:</h3>
+        <ul>
+          <li><code>names.append("Sara")</code>: إضافة عنصر.</li>
+          <li><code>names.remove("Ali")</code>: حذف عنصر.</li>
+          <li><code>for name in names:</code>: التكرار على العناصر.</li>
+        </ul>
+
+        <h3>مثال: فحص قوة كلمة المرور</h3>
+        <div class="code-block">
+          <button class="copy-btn" onclick="copyCode(this)">نسخ</button>
+          password = input('Enter password: ')<br />
+          chars = list(password)<br />
+          score = 0<br />
+          if len(chars) >= 8:<br />
+          &nbsp;&nbsp;&nbsp;&nbsp;score += 1<br />
+          for ch in chars:<br />
+          &nbsp;&nbsp;&nbsp;&nbsp;if ch.isdigit():<br />
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;score += 1<br />
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break
+        </div>
+
+        <button class="ask-btn" onclick="askAI('السلاسل النصية والقوائم')">
+          🤖 اسأل المعلم الذكي عن هذا الدرس
+        </button>
+      </div>
+
+      <!-- الدرس 4 -->
+      <div id="lesson4" class="lesson-card">
+        <h2>الدرس الرابع: الدوال ذات المعاملات (Functions)</h2>
+        <p>
+          <strong>الدالة:</strong> مجموعة من التعليمات البرمجية نكتبها مرة واحدة
+          ونستخدمها عدة مرات.
+        </p>
+        <p>
+          <strong>المعاملات (Parameters):</strong> قيم نرسلها إلى الدالة لكي
+          تعمل عليها.
+        </p>
+
+        <h3>شكل الدالة في Python:</h3>
+        <div class="code-block">
+          <button class="copy-btn" onclick="copyCode(this)">نسخ</button>
+          def function_name(parameters):<br />
+          &nbsp;&nbsp;&nbsp;&nbsp;# code
+        </div>
+
+        <h3>مثال: حساب مساحة دائرة</h3>
+        <div class="code-block">
+          <button class="copy-btn" onclick="copyCode(this)">نسخ</button>
+          def circle_area(radius):<br />
+          &nbsp;&nbsp;&nbsp;&nbsp;pi = 3.14<br />
+          &nbsp;&nbsp;&nbsp;&nbsp;area = pi * radius * radius<br />
+          &nbsp;&nbsp;&nbsp;&nbsp;print("Area =", area)<br />
+          <br />
+          circle_area(5)
+        </div>
+        <p>
+          <strong>الشرح:</strong> <code>def</code> لتعريف الدالة،
+          <code>radius</code> هو المعامل، وعند استدعاء الدالة نعطيها القيمة 5.
+        </p>
+
+        <button class="ask-btn" onclick="askAI('الدوال ذات المعاملات')">
+          🤖 اسأل المعلم الذكي عن هذا الدرس
+        </button>
+      </div>
+
+      <!-- الدرس 5 -->
+      <div id="lesson5" class="lesson-card">
+        <h2>الدرس الخامس: معالجة أخطاء مدخلات المستخدم</h2>
+        <p>
+          عند كتابة برنامج، قد يدخل المستخدم بيانات خاطئة (مثل كتابة كلمة بدلاً
+          من رقم). لحل هذه المشكلة نستخدم <code>try</code> و
+          <code>except</code>.
+        </p>
+
+        <h3>الصيغة العامة:</h3>
+        <div class="code-block">
+          <button class="copy-btn" onclick="copyCode(this)">نسخ</button>
+          try:<br />
+          &nbsp;&nbsp;&nbsp;&nbsp;# الكود الذي قد يسبب خطأ<br />
+          except:<br />
+          &nbsp;&nbsp;&nbsp;&nbsp;# ماذا نفعل إذا حدث خطأ
+        </div>
+
+        <h3>مثال: معالجة خطأ القسمة على صفر</h3>
+        <div class="code-block">
+          <button class="copy-btn" onclick="copyCode(this)">نسخ</button>
+          try:<br />
+          &nbsp;&nbsp;&nbsp;&nbsp;num = int(input("Enter a number: "))<br />
+          &nbsp;&nbsp;&nbsp;&nbsp;result = 10 / num<br />
+          &nbsp;&nbsp;&nbsp;&nbsp;print(result)<br />
+          except ValueError:<br />
+          &nbsp;&nbsp;&nbsp;&nbsp;print("Please enter numbers only!")<br />
+          except ZeroDivisionError:<br />
+          &nbsp;&nbsp;&nbsp;&nbsp;print("You cannot divide by zero!")
+        </div>
+
+        <button class="ask-btn" onclick="askAI('معالجة الأخطاء')">
+          🤖 اسأل المعلم الذكي عن هذا الدرس
+        </button>
+      </div>
+
+      <!-- الدرس 6 -->
+      <div id="lesson6" class="lesson-card">
+        <h2>الدرس الأول (الوحدة 2): التنبؤ باستخدام نموذج الذكاء الاصطناعي</h2>
+        <p>
+          البرمجة التقليدية تعتمد على أوامر ثابتة، بينما نموذج الذكاء الاصطناعي
+          يتعلم من البيانات ليتنبأ بالنتائج.
+        </p>
+
+        <h3>المعادلة الرياضية للنموذج الخطي:</h3>
+        <p style="text-align: center; font-size: 1.5rem; color: #38bdf8">
+          y = w * x + b
+        </p>
+        <ul>
+          <li><strong>x:</strong> المدخل (عدد ساعات المذاكرة).</li>
+          <li><strong>y:</strong> الناتج (الدرجة المتوقعة).</li>
+          <li><strong>w:</strong> الوزن (مقدار زيادة الدرجة لكل ساعة).</li>
+          <li><strong>b:</strong> الانحياز (الدرجة الأساسية بدون مذاكرة).</li>
+        </ul>
+
+        <h3>مثال بالكود:</h3>
+        <div class="code-block">
+          <button class="copy-btn" onclick="copyCode(this)">نسخ</button>
+          def predict_grade(x):<br />
+          &nbsp;&nbsp;&nbsp;&nbsp;w = 5<br />
+          &nbsp;&nbsp;&nbsp;&nbsp;b = 10<br />
+          &nbsp;&nbsp;&nbsp;&nbsp;y = w * x + b<br />
+          &nbsp;&nbsp;&nbsp;&nbsp;return y<br />
+          <br />
+          hours = 3<br />
+          grade = predict_grade(hours)<br />
+          print("الدرجة المتوقعة:", grade)
+        </div>
+
+        <button class="ask-btn" onclick="askAI('التنبؤ بنموذج AI')">
+          🤖 اسأل المعلم الذكي عن هذا الدرس
+        </button>
+      </div>
+
+      <!-- الدرس 7 -->
+      <div id="lesson7" class="lesson-card">
+        <h2>الدرس الثاني (الوحدة 2): الذكاء الاصطناعي وحقوق الملكية الفكرية</h2>
+        <p>
+          عند استخدام تطبيقات الذكاء الاصطناعي، يجب احترام حقوق الملكية الفكرية
+          والخصوصية.
+        </p>
+
+        <h3>قاعدة المصادر الثلاثة:</h3>
+        <ol>
+          <li>المصدر الأول: الذكاء الاصطناعي (للحصول على أفكار أولية).</li>
+          <li>المصدر الثاني: محرك بحث/موسوعة (للتأكد من المعلومات).</li>
+          <li>المصدر الثالث: كتاب أو رأي خبير (للتأكد النهائي).</li>
+        </ol>
+
+        <h3>نقاط مهمة في شروط الاستخدام:</h3>
+        <ul>
+          <li><strong>العمر:</strong> معظم التطبيقات تتطلب عمر 13+ سنة.</li>
+          <li>
+            <strong>حقوق الملكية:</strong> تأكد من ملكية الصورة أو النص
+            المستخدم.
+          </li>
+          <li><strong>حق الحذف:</strong> يمكنك حذف سجل المحادثات نهائياً.</li>
+        </ul>
+        <p>
+          <strong>تحذير:</strong> لا تشارك معلوماتك الشخصية (الاسم الكامل،
+          العنوان، أرقام الهاتف) مع تطبيقات الذكاء الاصطناعي.
+        </p>
+
+        <button class="ask-btn" onclick="askAI('حقوق الملكية الفكرية')">
+          🤖 اسأل المعلم الذكي عن هذا الدرس
+        </button>
+      </div>
+
+      <!-- الدرس 8 -->
+      <div id="lesson8" class="lesson-card">
+        <h2>
+          الدرس الثالث (الوحدة 2): الوعي السيبراني والألعاب الإلكترونية الخطرة
+        </h2>
+        <p>
+          الألعاب الإلكترونية لها فوائد (تطوير المهارات العقلية، التخطيط،
+          التعاون) ولكن لها مخاطر أيضاً.
+        </p>
+
+        <h3>مخاطر الألعاب:</h3>
+        <ul>
+          <li>العنف والألفاظ غير المناسبة.</li>
+          <li>الحيل النفسية (Dark Patterns).</li>
+          <li>الدفع مقابل الفوز (Pay to Win).</li>
+          <li>صناديق الغنائم (Loot Boxes) التي تشبه القمار.</li>
+          <li>العزلة الاجتماعية والمشاك</li>
+        </ul>
+      </div>
+    </div>
+  </body>
+</html>
